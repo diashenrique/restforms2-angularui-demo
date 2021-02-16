@@ -1,14 +1,22 @@
 {
-    "objectscript.conn" :{
-      "ns": "IRISAPP",
-      "active": true,
-      "docker-compose": {
-        "service": "iris",
-        "internalPort": 52773
-      },
-      "links": {
-        "RESTForms2-UI": "http://localhost:${port}/restforms2-ui/index.html"
+  "files.associations": {
 
+    "Dockerfile*": "dockerfile",
+    "iris.script": "objectscript"
+  },
+  "objectscript.conn": {
+    "ns": "IRISAPP",
+    "username": "_SYSTEM",
+    "password": "SYS",
+    "active": true,
+    "docker-compose": {
+      "service": "iris",
+      "internalPort": 52773
+    },
+    "links": {
+      "RESTForms2-UI": "http://localhost:${port}/restforms2-ui/index.html",
+      "Dashboard": "http://localhost:52773/csp/irisapp/index.html",
+      "Datatable": "http://localhost:52773/csp/irisapp/datatable.html"
     }
   }
 
