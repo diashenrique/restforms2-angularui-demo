@@ -33,7 +33,7 @@ $(document).ready(function () {
       });
     }
   });
-
+  
   $("#divTodoList").dxDataGrid({
     dataSource: todoStore,
     showBorders: true,

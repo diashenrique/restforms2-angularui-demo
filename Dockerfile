@@ -1,7 +1,7 @@
 # ARG IMAGE=store/intersystems/iris-community:2020.1.0.204.0
 # ARG IMAGE=intersystemsdc/iris-community:2020.1.0.209.0-zpm
-# ARG IMAGE=intersystemsdc/iris-community:2020.2.0.204.0-zpm
-ARG IMAGE=store/intersystems/iris-community-arm64:2020.4.0.524.0
+ARG IMAGE=intersystemsdc/iris-community:2020.2.0.204.0-zpm
+# ARG IMAGE=intersystemsdc/iris-community-arm64:2020.4.0.524.0-zpm
 FROM $IMAGE
 
 USER root
@@ -9,7 +9,7 @@ USER root
 WORKDIR /opt/irisapp
 RUN chown ${ISC_PACKAGE_MGRUSER}:${ISC_PACKAGE_IRISGROUP} /opt/irisapp
 COPY irissession.sh /
-RUN chmod +x /irissession.sh 
+RUN chmod +x /irissession.sh
 
 RUN mkdir -p /tmp/deps \
  && cd /tmp/deps \
@@ -34,13 +34,14 @@ RUN \
   write "Modify forms application security...",! \
   set webName = "/forms" \
   set webProperties("AutheEnabled") = 32 \
-  set webProperties("MatchRoles")=":%DB_%DEFAULT" \
+  set webProperties("MatchRoles") = ":%DB_%DEFAULT" \
+  set webProperties("DispatchClass") = "dc.irisrad.rest.Main" \
   set sc = ##class(Security.Applications).Modify(webName, .webProperties) \
   # if sc<1 write $SYSTEM.OBJ.DisplayError(sc) \
   write "Add Role for CSPSystem User...",! \
-  set sc=##class(Security.Users).AddRoles("CSPSystem","%DB_%DEFAULT") 
-  
-  
+  set sc=##class(Security.Users).AddRoles("CSPSystem","%DB_%DEFAULT")
+
+
 
 # bringing the standard shell back
 SHELL ["/bin/bash", "-c"]
