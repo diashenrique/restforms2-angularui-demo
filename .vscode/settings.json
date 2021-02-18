@@ -16,7 +16,8 @@
     "links": {
       "RESTForms2-UI": "http://localhost:${port}/restforms2-ui/index.html",
       "Dashboard": "http://localhost:52773/csp/irisapp/index.html",
-      "Datatable": "http://localhost:52773/csp/irisapp/datatable.html"
+      "Datatable": "http://localhost:52773/csp/irisapp/datatable.html",
+      "restforms2-devextreme-poc": "http://localhost:52773/csp/irisapp/index.html?formName=Form.Test.Person"
     }
   }
 
