@@ -1,6 +1,6 @@
 var urlOrigin = window.location.origin;
 var urlREST = `${urlOrigin}/forms/form`;
-// Form.REST.Main
+
 var headers = {
   "Authorization": `Basic ${btoa('_system:SYS')}`
 };
@@ -12,12 +12,7 @@ var qs = window.location.search
               acc[curr[0]] = curr[1];
               return acc;
             }, {});
-var formName = qs.formName || 'User.forms.TestForm';
-// var formName = 'Form.Test.Person';
-// var formName = 'Form.Test.Company';
-// var formName = 'Form.Test.Simple';
-// var formName = 'Data.Countries';
-// var formName = 'Data.Countries';
+var formName = qs.formName || 'Form.Test.Person';
 
 $(document).ready(function () {
 
@@ -34,37 +29,36 @@ $(document).ready(function () {
             resolve(data.children)
           }
         });
-        // $.getJSON(`${urlREST}/objects/${formName}/allobj?size=1000000`, (data) => {
-        //   console.log(data.children);
-        //   resolve(data.children)
-        // });
       });
-      return promise
+      return promise;
     },
-    // insert: function (values) {
-    //   return $.ajax({
-    //     url: urlREST + "/todo",
-    //     method: "POST",
-    //     processData: false,
-    //     contentType: "application/json",
-    //     data: JSON.stringify(values)
-    //   });
-    // },
-    // update: function (key, values) {
-    //   return $.ajax({
-    //     url: urlREST + "/todo/" + encodeURIComponent(key),
-    //     method: "PUT",
-    //     processData: false,
-    //     contentType: "application/json",
-    //     data: JSON.stringify(values)
-    //   });
-    // },
-    // remove: function (key) {
-    //   return $.ajax({
-    //     url: urlREST + "/todo/" + encodeURIComponent(key),
-    //     method: "DELETE"
-    //   });
-    // }
+    insert: function (values) {
+      return $.ajax({
+        url: `${urlREST}/object/${formName}`,
+        method: "POST",
+        headers: headers,
+        processData: false,
+        contentType: "application/json",
+        data: JSON.stringify(values)
+      });
+    },
+    update: function (key, values) {
+      return $.ajax({
+        url: `${urlREST}/object/${formName}/${encodeURIComponent(key)}`,
+        method: "PUT",
+        headers: headers,
+        processData: false,
+        contentType: "application/json",
+        data: JSON.stringify(values)
+      });
+    },
+    remove: function (key) {
+      return $.ajax({
+        url: `${urlREST}/object/${formName}/${encodeURIComponent(key)}`,
+        method: "DELETE",
+        headers: headers
+      });
+    }
   });
 
   // Field types
@@ -144,7 +138,11 @@ $(document).ready(function () {
       case FieldType.Time:
       case FieldType.TimeStamp:
         return "datetime";
+      case FieldType.Boolean:
+        return "boolean";
       case FieldType.Form:
+        // todo:
+        // return
       default:
         return "string";
     }
