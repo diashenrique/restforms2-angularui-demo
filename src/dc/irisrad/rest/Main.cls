@@ -7,6 +7,7 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 <Route Url="/form" Method="POST" Call="CreateForm"/>
 <Route Url="/form/:form" Method="DELETE" Call="DeleteForm"/>
 <Route Url="/form/object/:form/:id" Method="PUT" Call="updateFormDynamicObject"/>
+<Route Url="/form/object/:form/:id" Method="DELETE" Call="deleteFormObject"/>
 <Map Prefix="/form" Forward="Form.REST.Form"/>
 
 <Route Url="/logout" Method="GET" Call="logout"/>
@@ -18,9 +19,17 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 
 ClassMethod updateFormDynamicObject(form, id) As %Status
 {
-  set sc = $$$OK
   $$$TOE(sc, ##class(Form.REST.Object).updateFormDynamicObject(form, id))
-  write 1
+  /// ugly hack for jQuery Ajax error
+  Write 1
+  Return sc
+}
+
+ClassMethod deleteFormObject(form, id) As %Status
+{
+  $$$TOE(sc, ##class(Form.REST.Object).deleteFormObject(form, id))
+  /// ugly hack for jQuery Ajax error
+  Write 1
   Return sc
 }
 
