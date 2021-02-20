@@ -5,13 +5,13 @@ var headers = {
   "Authorization": `Basic ${btoa('_system:SYS')}`
 };
 var qs = window.location.search
-            .substr(1)
-            .split('&')
-            .map(item => item.split('='))
-            .reduce((acc, curr) => {
-              acc[curr[0]] = curr[1];
-              return acc;
-            }, {});
+  .substr(1)
+  .split('&')
+  .map(item => item.split('='))
+  .reduce((acc, curr) => {
+    acc[curr[0]] = curr[1];
+    return acc;
+  }, {});
 var formName = qs.formName || 'Form.Test.Person';
 
 $(document).ready(function () {
@@ -141,7 +141,7 @@ $(document).ready(function () {
       case FieldType.Boolean:
         return "boolean";
       case FieldType.Form:
-        return "number";
+        // return "number";
       default:
         return "string";
     }
@@ -159,32 +159,35 @@ $(document).ready(function () {
     complete: (resp) => {
       var rf2FormInfo = resp.responseJSON;
       var cols = rf2FormInfo.fields.map(rf2Field => {
-        
+
         var objCol = {
           dataField: rf2Field.name,
           caption: rf2Field.displayName,
           dataType: getDevExtremeFieldType(rf2Field)
         }
-        
-        if(getPropType(rf2Field) == FieldType.Form){
-          console.log("Campo relacionado ", objCol);  
-          
+
+        if (getPropType(rf2Field) == FieldType.Form) {
+          console.log("Campo relacionado ", objCol);
+
+          var lookupForm = rf2Field.type;
+          var fieldValue = rf2Field.name.valueOf();
           objCol.lookup = {
             dataSource: {
               store: new DevExpress.data.CustomStore({
-                key: "_id",
+                key: "ID",
                 //loadMode: "raw",
                 load: function () {
-                  var lookupForm = rf2Field.type;
-                  var fieldValue = rf2Field.name.valueOf();
                   return sendRequest(`${urlREST}/objects/${lookupForm}/info`);
+                },
+                byKey: function (key) {
+                  return sendRequest(`${urlREST}/object/${lookupForm}/${key}`);
                 }
               })
             },
-            valueExpr: "_id",
+            valueExpr: "ID",
             displayExpr: "displayName"
           }
-          
+
         };
 
         return objCol;
