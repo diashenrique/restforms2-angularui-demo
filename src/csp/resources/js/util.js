@@ -1,3 +1,7 @@
+var headers = {
+    "Authorization": `Basic ${btoa('_system:SYS')}`
+};
+
 function sendRequest(url, method, data) {
     var d = $.Deferred();
 
@@ -5,6 +9,7 @@ function sendRequest(url, method, data) {
 
     $.ajax(url, {
         method: method || "GET",
+        headers: headers,
         data: data,
         cache: false,
         xhrFields: {
