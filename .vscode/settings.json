@@ -14,6 +14,7 @@
       "internalPort": 52773
     },
     "links": {
+      "Portal": "http://localhost:52773/csp/sys/%25CSP.Portal.Home.zen?$NAMESPACE=%25SYS",
       "RESTForms2-UI": "http://localhost:${port}/restforms2-ui/index.html",
       "Dashboard": "http://localhost:52773/csp/irisapp/index.html",
       "Datatable": "http://localhost:52773/csp/irisapp/datatable.html",
