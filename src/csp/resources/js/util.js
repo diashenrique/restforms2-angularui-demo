@@ -16,7 +16,8 @@ function sendRequest(url, method, data) {
             withCredentials: true
         }
     }).done(function (result) {
-        console.log("utilJS ",result.children);
+        var jsonResult = {}
+        jsonResult.data = result.children;
         d.resolve(method === "GET" ? result.children : result);
     }).fail(function (xhr) {
         d.reject(xhr.responseJSON ? xhr.responseJSON.Message : xhr.statusText);

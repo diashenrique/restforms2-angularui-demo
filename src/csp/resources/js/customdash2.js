@@ -58,6 +58,11 @@ $(document).ready(function () {
         method: "DELETE",
         headers: headers
       });
+    },
+    onBeforeSend: function (method, ajaxOptions) {
+      ajaxOptions.xhrFields = {
+        withCredentials: true
+      };
     }
   });
 
