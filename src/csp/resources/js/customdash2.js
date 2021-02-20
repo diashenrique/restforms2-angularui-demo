@@ -141,18 +141,6 @@ $(document).ready(function () {
       case FieldType.Boolean:
         return "boolean";
       case FieldType.Form:
-        // todo:
-        // var tLookup = '"number",' +
-        // ' lookup: { ' + 
-        // ' dataSource: new DevExpress.data.CustomStore({ ' + 
-        // ' key: "_id",' + 
-        // ' loadUrl: url + "/CustomersLookup", ' + 
-        // ' onBeforeSend: function(method, ajaxOptions) { ' + 
-        // ' ajaxOptions.xhrFields = { withCredentials: true }; ' + 
-        // ' }}), ' + 
-        // ' valueExpr: "_id", ' + 
-        // ' displayExpr: "displayName" }'
-        // return JSON.parse(tLookup);
         return "number";
       default:
         return "string";
@@ -180,23 +168,23 @@ $(document).ready(function () {
         
         if(getPropType(rf2Field) == FieldType.Form){
           console.log("Campo relacionado ", objCol);  
-          /*
+          
           objCol.lookup = {
             dataSource: {
               store: new DevExpress.data.CustomStore({
                 key: "_id",
-                loadMode: "raw",
+                //loadMode: "raw",
                 load: function () {
                   var lookupForm = rf2Field.type;
                   var fieldValue = rf2Field.name.valueOf();
-                  return sendRequest(`${urlREST}/objects/${lookupForm}/${fieldValue}`);
+                  return sendRequest(`${urlREST}/objects/${lookupForm}/info`);
                 }
               })
             },
             valueExpr: "_id",
             displayExpr: "displayName"
           }
-          */
+          
         };
 
         return objCol;
