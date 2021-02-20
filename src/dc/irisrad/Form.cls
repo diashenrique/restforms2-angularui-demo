@@ -94,4 +94,36 @@ Method SetParameter(pParameterDef As %DynamicObject)
   Set paramObj.Default = pParameterDef.value
 }
 
+Method CreateDefaulQuery()
+{
+  /*
+  Quit "SELECT name, spouse->name spouse, "_
+    "(SELECT LIST(name) FROM Form_Test.Person WHERE ID %INLIST dc_irisrad.Form_FlattenList(User_forms_TestForm1.children)) children "_
+    "FROM User_forms.TestForm User_forms_TestForm1"
+  */
+	set tMethod = ##class(%Dictionary.MethodDefinition).%New()
+	set tMethod.parent = pClass
+	set tMethod.Name = "Import"
+	set pSequence = pSequence + 1
+	set tMethod.SequenceNumber = pSequence
+	set tMethod.ClassMethod = 1
+	set tMethod.ReturnType = "%Library.Integer"
+	set tMethod.FormalSpec = "pSelectMode:%Library.Integer=$zu(115,5),pFileName:%Library.String(MAXLEN=""""),pDelimiter:%String="","",pQuote:%String="""""""",pHeaders:%Integer=0,&pRecordCount:%Integer"
+	set tMethod.SqlProc = 1
+	do tMethod.Implementation.WriteLine($Char(9)_"set tStatementId = $SYSTEM.Util.CreateGUID(), tCounter = 0, pRecordCount = 0")
+	do tMethod.Implementation.WriteLine($Char(9)_"set tPreparedStatement = ##class(%SQL.DynamicStatement).Prepare(tStatementId,..#ROWTYPE,pDelimiter,pQuote,,,0,""CSV"")")
+	do tMethod.Implementation.WriteLine($Char(9)_"if $Isobject(tPreparedStatement) {")
+}
+
+/// TODO: move to a util class
+ClassMethod FlattenList(pList As %List) As %List [ SqlProc ]
+{
+  Set result = ""
+  Set len = $LISTLENGTH(pList)
+  For i=1:1:len {
+    Set $LIST(result, * + 1) = $LISTTOSTRING($LISTGET(pList, i))
+  }
+  Return result
+}
+
 }

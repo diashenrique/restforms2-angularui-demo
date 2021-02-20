@@ -141,7 +141,7 @@ $(document).ready(function () {
       case FieldType.Boolean:
         return "boolean";
       case FieldType.Form:
-        // return "number";
+        return "number";
       default:
         return "string";
     }
@@ -168,7 +168,6 @@ $(document).ready(function () {
 
         if (getPropType(rf2Field) == FieldType.Form) {
           console.log("Campo relacionado ", objCol);
-
           var lookupForm = rf2Field.type;
           var fieldValue = rf2Field.name.valueOf();
           objCol.lookup = {
