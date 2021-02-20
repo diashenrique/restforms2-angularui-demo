@@ -173,17 +173,19 @@ $(document).ready(function () {
           objCol.lookup = {
             dataSource: {
               store: new DevExpress.data.CustomStore({
-                key: "ID",
-                //loadMode: "raw",
+                key: "_id",
+                loadMode: "raw",
                 load: function () {
+                  console.log(`${urlREST}/objects/${lookupForm}/info`);
                   return sendRequest(`${urlREST}/objects/${lookupForm}/info`);
                 },
                 byKey: function (key) {
+                  console.log(`${urlREST}/objects/${lookupForm}/${key}`);
                   return sendRequest(`${urlREST}/object/${lookupForm}/${key}`);
                 }
               })
             },
-            valueExpr: "ID",
+            valueExpr: "_id",
             displayExpr: "displayName"
           }
 
