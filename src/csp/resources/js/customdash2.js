@@ -16,8 +16,11 @@ var formName = qs.formName || 'Form.Test.Person';
 
 $(document).ready(function () {
 
+  $("#divFormName").text(` ${formName}`);
+
   var todoStore = new DevExpress.data.CustomStore({
     key: "ID",
+    /*
     load: function () {
       var promise = new Promise((resolve, reject) => {
         $.ajax({
@@ -31,6 +34,10 @@ $(document).ready(function () {
         });
       });
       return promise;
+    },
+    */
+    load: function () {
+      return sendRequest(`${urlREST}/objects/${formName}/allobj?size=1000000`);
     },
     insert: function (values) {
       return $.ajax({
@@ -205,6 +212,11 @@ $(document).ready(function () {
         showBorders: true,
         showBorders: true,
         columnHidingEnabled: true,
+        searchPanel: {
+          visible: true,
+          width: 240,
+          placeholder: "Search..."
+        },
         editing: {
           mode: "form",
           allowAdding: true,
