@@ -210,7 +210,7 @@ $(document).ready(function () {
       $("#divRAD").dxDataGrid({
         dataSource: todoStore,
         showBorders: true,
-        showBorders: true,
+        columnsAutoWidth: true,
         columnHidingEnabled: true,
         searchPanel: {
           visible: true,
