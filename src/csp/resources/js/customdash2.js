@@ -179,7 +179,7 @@ $(document).ready(function () {
             dataSource: {
               store: new DevExpress.data.CustomStore({
                 key: "_id",
-                loadMode: "raw",
+                //loadMode: "raw",
                 load: function () {
                   console.log(`${urlREST}/objects/${lookupForm}/info`);
                   return sendRequest(`${urlREST}/objects/${lookupForm}/info`);
@@ -200,7 +200,7 @@ $(document).ready(function () {
       });
       // console.log(rf2FormInfo, cols);
 
-      $("#divTodoList").dxDataGrid({
+      $("#divRAD").dxDataGrid({
         dataSource: todoStore,
         showBorders: true,
         showBorders: true,
