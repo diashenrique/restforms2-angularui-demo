@@ -142,7 +142,18 @@ $(document).ready(function () {
         return "boolean";
       case FieldType.Form:
         // todo:
-        // return
+        // var tLookup = '"number",' +
+        // ' lookup: { ' + 
+        // ' dataSource: new DevExpress.data.CustomStore({ ' + 
+        // ' key: "_id",' + 
+        // ' loadUrl: url + "/CustomersLookup", ' + 
+        // ' onBeforeSend: function(method, ajaxOptions) { ' + 
+        // ' ajaxOptions.xhrFields = { withCredentials: true }; ' + 
+        // ' }}), ' + 
+        // ' valueExpr: "_id", ' + 
+        // ' displayExpr: "displayName" }'
+        // return JSON.parse(tLookup);
+        return "number";
       default:
         return "string";
     }
@@ -160,18 +171,43 @@ $(document).ready(function () {
     complete: (resp) => {
       var rf2FormInfo = resp.responseJSON;
       var cols = rf2FormInfo.fields.map(rf2Field => {
-        return {
+        
+        var objCol = {
           dataField: rf2Field.name,
           caption: rf2Field.displayName,
           dataType: getDevExtremeFieldType(rf2Field)
+        }
+        
+        if(getPropType(rf2Field) == FieldType.Form){
+          console.log("Campo relacionado ", objCol);  
+          /*
+          objCol.lookup = {
+            dataSource: {
+              store: new DevExpress.data.CustomStore({
+                key: "_id",
+                loadMode: "raw",
+                load: function () {
+                  var lookupForm = rf2Field.type;
+                  var fieldValue = rf2Field.name.valueOf();
+                  return sendRequest(`${urlREST}/objects/${lookupForm}/${fieldValue}`);
+                }
+              })
+            },
+            valueExpr: "_id",
+            displayExpr: "displayName"
+          }
+          */
         };
+
+        return objCol;
       });
-      console.log(rf2FormInfo, cols);
+      // console.log(rf2FormInfo, cols);
 
       $("#divTodoList").dxDataGrid({
         dataSource: todoStore,
         showBorders: true,
         showBorders: true,
+        columnHidingEnabled: true,
         editing: {
           mode: "form",
           allowAdding: true,
