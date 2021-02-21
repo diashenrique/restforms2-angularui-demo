@@ -61,7 +61,7 @@ var createDefaultCRUDForm = function() {
     error: (jqXHR, textStatus, errorThrown) => {
       console.log(jqXHR.status, textStatus, errorThrown)
       if (jqXHR.status === 500) {
-        alert(`Form not found: ${formName}`)
+        notify(`Form not found: ${formName}`, NotificationEnum.ERROR);
       }
       return true;
     },

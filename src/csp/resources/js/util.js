@@ -35,8 +35,19 @@ function getQueryString() {
     }, {});
 }
 
+var NotificationEnum = {
+    ERROR: 'error',
+    SUCCESS: 'success',
+    WARNING: 'warning',
+    INFO: 'info'
+}
+function notify(msg, type, duration) {
+    DevExpress.ui.notify(msg, type, duration||1500);
+}
+
 // Utility method for login logic
 function doLogin(user, password) {
+    var d = $.Deferred();
     $.ajax(`${urlOrigin}/forms/login`, {
         headers: {
             "Authorization": `Basic ${btoa(`${user}:${password}`)}`
@@ -44,18 +55,21 @@ function doLogin(user, password) {
         success: (data, textStatus, jqXHR) => {
             // todo: enhance this handling
             window.location.href = 'rad.html'
+            d.resolve();
         },
         error: (jqXHR, textStatus, errorThrown) => {
             // todo: handle exception properly...
             console.log(jqXHR, textStatus, errorThrown);
             console.log(jqXHR.status)
             if (jqXHR.status === 401) {
-                alert('User or passoword incorrent. Please, try again.')
+                notify('Incorrect user or passoword. Please, try again.', NotificationEnum.ERROR)
             } else {
-                alert('Sorry, can\'t login. See log for more detail.');
+                notify('Sorry, can\'t login. See log for more detail.', NotificationEnum.ERROR);
             }
+            d.reject();
         }
     });
+    return d.promise();
 }
 
 // Utility method for logout logic
@@ -67,7 +81,7 @@ function doLogout() {
         },
         error: (jqXHR, textStatus, errorThrown) => {
             console.log(jqXHR, textStatus, errorThrown);
-            alert('Error on logout. See log for more detail.');
+            notify('Error on logout. See log for more detail.', NotificationEnum.ERROR);
             window.location.href = 'login.html'
         }
     });

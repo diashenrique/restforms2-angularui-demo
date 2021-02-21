@@ -68,7 +68,7 @@
                 <img src="resources/img/IRISRADStudio.png" style="align-self: center;">
             </h1>
         </header><!-- form -->
-        <form class="auth-form">
+        <form id="loginForm" class="auth-form">
             <!-- .form-group -->
             <div class="form-group">
                 <div class="form-label-group">
@@ -109,6 +109,9 @@
     <script src="resources/plugins/looper/assets/vendor/bootstrap/js/popper.min.js"></script>
     <script src="resources/plugins/looper/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
     <!-- END BASE JS -->
+    <!-- BEGIN DevExtreme library -->
+    <script type="text/javascript" src="resources/plugins/extreme20.1.4/js/dx.web.js"></script>
+    <!-- END DevExtreme library -->
     <!-- BEGIN PLUGINS JS -->
     <script src="resources/plugins/looper/assets/vendor/particles.js/particles.js"></script>
     <script type="text/javascript" src="resources/js/util.js"></script>
@@ -122,9 +125,10 @@
             particlesJS.load('auth-header', 'resources/plugins/looper/assets/javascript/pages/particles.json');
         });
 
-        $('#btnLogin').on('click', (event) => {
+        $("#loginForm").submit(function(event) {
             doLogin($('#inputUser').val(), $('#inputPassword').val());
-        })
+            event.preventDefault();
+        });
     </script> <!-- END PLUGINS JS -->
     <!-- BEGIN THEME JS -->
     <script src="resources/plugins/looper/assets/javascript/theme.min.js"></script>
