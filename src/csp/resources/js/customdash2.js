@@ -4,6 +4,14 @@ var urlREST = `${urlOrigin}/forms/form`;
 var headers = {
   "Authorization": `Basic ${btoa('_system:SYS')}`
 };
+
+$(document).ajaxError(function (event, jqXHR, ajaxSettings, thrownError) {
+  console.log(jqXHR.status, event, ajaxSettings, thrownError)
+  if (jqXHR.status === 401) {
+    window.location.href = 'https://uselooper.com/auth-signin-v1.html'; //'./login';
+  }
+});
+
 var qs = window.location.search
   .substr(1)
   .split('&')
@@ -79,8 +87,12 @@ $(document).ready(function () {
     headers: headers,
     processData: false,
     contentType: "application/json",
-    error: () => {
-      alert(`Form not found: ${formName}`)
+    error: (jqXHR, textStatus, errorThrown) => {
+      console.log(jqXHR.status, textStatus, errorThrown)
+      if (jqXHR.status === 500) {
+        alert(`Form not found: ${formName}`)
+      }
+      return true;
     },
     complete: (resp) => {
       var rf2FormInfo = resp.responseJSON;
