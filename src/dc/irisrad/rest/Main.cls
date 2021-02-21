@@ -48,14 +48,14 @@ ClassMethod DoLogin() As %Status
 /// Logout user from current session
 ClassMethod DoLogout() As %Status
 {
+  // ugly hack for jQuery Ajax error
+  Write 1
   If (..#AuthType = "SESSION") {
     Return ##class(Form.REST.Main).logout()
   } Else {
     // todo: implement other auth types
     Throw ##class(%Exception.General).%New("Invalid value for AuthType parameter: "_..#AuthType)
   }
-  // ugly hack for jQuery Ajax error
-  Write 1
 }
 
 ClassMethod CreateForm() As %Status
