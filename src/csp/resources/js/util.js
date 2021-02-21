@@ -25,3 +25,15 @@ function sendRequest(url, method, data) {
 
     return d.promise();
 }
+
+// utility method to get URL query string
+function getQueryString() {
+  return window.location.search
+    .substr(1)
+    .split('&')
+    .map(item => item.split('='))
+    .reduce((acc, curr) => {
+      acc[curr[0]] = curr[1];
+      return acc;
+    }, {});
+}

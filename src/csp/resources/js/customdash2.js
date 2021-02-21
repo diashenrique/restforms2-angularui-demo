@@ -12,14 +12,7 @@ $(document).ajaxError(function (event, jqXHR, ajaxSettings, thrownError) {
   }
 });
 
-var qs = window.location.search
-  .substr(1)
-  .split('&')
-  .map(item => item.split('='))
-  .reduce((acc, curr) => {
-    acc[curr[0]] = curr[1];
-    return acc;
-  }, {});
+var qs = getQueryString();
 var formName = qs.formName || 'Form.Test.Person';
 
 $(document).ready(function () {
@@ -28,22 +21,6 @@ $(document).ready(function () {
 
   var todoStore = new DevExpress.data.CustomStore({
     key: "ID",
-    /*
-    load: function () {
-      var promise = new Promise((resolve, reject) => {
-        $.ajax({
-          url: `${urlREST}/objects/${formName}/allobj?size=1000000`,
-          headers: headers,
-          dataType: "json",
-          success: (data) => {
-            console.log(data.children);
-            resolve(data.children)
-          }
-        });
-      });
-      return promise;
-    },
-    */
     load: function () {
       return sendRequest(`${urlREST}/objects/${formName}/allobj?size=1000000`);
     },
