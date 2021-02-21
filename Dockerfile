@@ -33,7 +33,8 @@ RUN \
   zn "%SYS" \
   write "Modify forms application security...",! \
   set webName = "/forms" \
-  set webProperties("AutheEnabled") = 32 \
+  set webProperties("AutheEnabled") = 16416 // password + login cookie \
+  set webProperties("CookiePath") = "/forms/" \
   set webProperties("MatchRoles") = ":%DB_%DEFAULT" \
   set webProperties("DispatchClass") = "dc.irisrad.rest.Main" \
   set sc = ##class(Security.Applications).Modify(webName, .webProperties) \

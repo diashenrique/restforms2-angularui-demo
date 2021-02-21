@@ -1,6 +1,8 @@
 Class dc.irisrad.rest.Main Extends Form.REST.Main
 {
 
+Parameter UseSession As BOOLEAN = 1;
+
 /// TODO: create a ENUM for auth types
 Parameter AuthType = "SESSION";
 
@@ -8,8 +10,8 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 {
 <Routes>
 <!-- Authentication routes -->
-<Route Url="/login" Method="POST" Call="CallLogin"/>
-<Route Url="/logout" Method="GET" Call="CallLogout"/>
+<Route Url="/login" Method="GET" Call="DoLogin"/>
+<Route Url="/logout" Method="GET" Call="DoLogout"/>
 
 <!-- Routes for dynamic form creation/deletion -->
 <Route Url="/form" Method="POST" Call="CreateForm"/>
@@ -31,7 +33,7 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 }
 
 /// Login user from current session
-ClassMethod CallLogin() As %Status
+ClassMethod DoLogin() As %Status
 {
   If (..#AuthType = "SESSION") {
     // As seen in RESTForm2UI, the test method is called for login logic; such method uses
@@ -44,7 +46,7 @@ ClassMethod CallLogin() As %Status
 }
 
 /// Logout user from current session
-ClassMethod CallLogout() As %Status
+ClassMethod DoLogout() As %Status
 {
   If (..#AuthType = "SESSION") {
     Return ##class(Form.REST.Main).logout()
@@ -52,6 +54,8 @@ ClassMethod CallLogout() As %Status
     // todo: implement other auth types
     Throw ##class(%Exception.General).%New("Invalid value for AuthType parameter: "_..#AuthType)
   }
+  // ugly hack for jQuery Ajax error
+  Write 1
 }
 
 ClassMethod CreateForm() As %Status

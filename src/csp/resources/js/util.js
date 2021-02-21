@@ -1,6 +1,4 @@
-var headers = {
-    "Authorization": `Basic ${btoa('_system:SYS')}`
-};
+var urlOrigin = window.location.origin;
 
 function sendRequest(url, method, data) {
     var d = $.Deferred();
@@ -9,7 +7,6 @@ function sendRequest(url, method, data) {
 
     $.ajax(url, {
         method: method || "GET",
-        headers: headers,
         data: data,
         cache: false,
         xhrFields: {
@@ -26,7 +23,7 @@ function sendRequest(url, method, data) {
     return d.promise();
 }
 
-// utility method to get URL query string
+// Utility method to get URL query string
 function getQueryString() {
   return window.location.search
     .substr(1)
@@ -36,4 +33,42 @@ function getQueryString() {
       acc[curr[0]] = curr[1];
       return acc;
     }, {});
+}
+
+// Utility method for login logic
+function doLogin(user, password) {
+    $.ajax(`${urlOrigin}/forms/login`, {
+        headers: {
+            "Authorization": `Basic ${btoa(`${user}:${password}`)}`
+        },
+        success: (data, textStatus, jqXHR) => {
+            // todo: enhance this handling
+            window.location.href = 'rad.html'
+        },
+        error: (jqXHR, textStatus, errorThrown) => {
+            // todo: handle exception properly...
+            console.log(jqXHR, textStatus, errorThrown);
+            console.log(jqXHR.status)
+            if (jqXHR.status === 401) {
+                alert('User or passoword incorrent. Please, try again.')
+            } else {
+                alert('Sorry, can\'t login. See log for more detail.');
+            }
+        }
+    });
+}
+
+// Utility method for logout logic
+function doLogout() {
+    $.ajax(`${urlOrigin}/forms/logout`, {
+        success: (data, textStatus, jqXHR) => {
+            // todo: enhance this handling
+            window.location.href = 'login.html'
+        },
+        error: (jqXHR, textStatus, errorThrown) => {
+            console.log(jqXHR, textStatus, errorThrown);
+            alert('Error on logout. See log for more detail.');
+            window.location.href = 'login.html'
+        }
+    });
 }

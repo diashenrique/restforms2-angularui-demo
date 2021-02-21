@@ -85,15 +85,16 @@
             </div><!-- /.form-group -->
             <!-- .form-group -->
             <div class="form-group">
-                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign In</button>
+                <button class="btn btn-lg btn-primary btn-block" type="button" id="btnLogin">Sign In</button>
             </div><!-- /.form-group -->
             <!-- .form-group -->
-            <div class="form-group text-center">
+            <!-- <div class="form-group text-center">
                 <div class="custom-control custom-control-inline custom-checkbox">
                     <input type="checkbox" class="custom-control-input" id="remember-me"> <label
                         class="custom-control-label" for="remember-me">Keep me sign in</label>
                 </div>
-            </div><!-- /.form-group -->
+            </div> -->
+            <!-- /.form-group -->
             <!-- recovery links -->
             <div class="text-center pt-3">
                 <a href="auth-recovery-password.html" class="link">Forgot Password?</a>
@@ -110,6 +111,7 @@
     <!-- END BASE JS -->
     <!-- BEGIN PLUGINS JS -->
     <script src="resources/plugins/looper/assets/vendor/particles.js/particles.js"></script>
+    <script type="text/javascript" src="resources/js/util.js"></script>
     <script>
         /**
          * Keep in mind that your scripts may not always be executed after the theme is completely ready,
@@ -118,6 +120,10 @@
         $(document).on('theme:init', () => {
             /* particlesJS.load(@dom-id, @path-json, @callback (optional)); */
             particlesJS.load('auth-header', 'resources/plugins/looper/assets/javascript/pages/particles.json');
+        });
+
+        $('#btnLogin').on('click', (event) => {
+            doLogin($('#inputUser').val(), $('#inputPassword').val());
         })
     </script> <!-- END PLUGINS JS -->
     <!-- BEGIN THEME JS -->

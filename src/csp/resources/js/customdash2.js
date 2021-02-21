@@ -1,14 +1,10 @@
 var urlOrigin = window.location.origin;
 var urlREST = `${urlOrigin}/forms/form`;
 
-var headers = {
-  "Authorization": `Basic ${btoa('_system:SYS')}`
-};
-
 $(document).ajaxError(function (event, jqXHR, ajaxSettings, thrownError) {
   console.log(jqXHR.status, event, ajaxSettings, thrownError)
   if (jqXHR.status === 401) {
-    window.location.href = 'https://uselooper.com/auth-signin-v1.html'; //'./login';
+    window.location.href = 'login.html';
   }
 });
 
@@ -30,7 +26,6 @@ var createDefaultCRUDForm = function() {
       return $.ajax({
         url: `${urlREST}/object/${formName}`,
         method: "POST",
-        headers: headers,
         processData: false,
         contentType: "application/json",
         data: JSON.stringify(values)
@@ -40,7 +35,6 @@ var createDefaultCRUDForm = function() {
       return $.ajax({
         url: `${urlREST}/object/${formName}/${encodeURIComponent(key)}`,
         method: "PUT",
-        headers: headers,
         processData: false,
         contentType: "application/json",
         data: JSON.stringify(values)
@@ -50,7 +44,6 @@ var createDefaultCRUDForm = function() {
       return $.ajax({
         url: `${urlREST}/object/${formName}/${encodeURIComponent(key)}`,
         method: "DELETE",
-        headers: headers
       });
     },
     onBeforeSend: function (method, ajaxOptions) {
@@ -63,7 +56,6 @@ var createDefaultCRUDForm = function() {
   $.ajax({
     url: `${urlREST}/info/${formName}`,
     method: "GET",
-    headers: headers,
     processData: false,
     contentType: "application/json",
     error: (jqXHR, textStatus, errorThrown) => {
