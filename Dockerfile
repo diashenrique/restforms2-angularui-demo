@@ -1,7 +1,7 @@
 # ARG IMAGE=store/intersystems/iris-community:2020.1.0.204.0
 # ARG IMAGE=intersystemsdc/iris-community:2020.1.0.209.0-zpm
 ARG IMAGE=intersystemsdc/iris-community:2020.2.0.204.0-zpm
-# ARG IMAGE=intersystemsdc/iris-community-arm64:2020.4.0.524.0-zpm
+# ARG IMAGE=store/intersystems/iris-community-arm64:2020.4.0.524.0
 FROM $IMAGE
 
 USER root
@@ -39,9 +39,11 @@ RUN \
   set sc = ##class(Security.Applications).Modify(webName, .webProperties) \
   # if sc<1 write $SYSTEM.OBJ.DisplayError(sc) \
   write "Add Role for CSPSystem User...",! \
-  set sc=##class(Security.Users).AddRoles("CSPSystem","%DB_%DEFAULT")
-
-
+  set sc=##class(Security.Users).AddRoles("CSPSystem","%DB_%DEFAULT") \ 
+  zpm "install dsw" \
+  do EnableDeepSee^%SYS.cspServer("/csp/irisapp/") \
+  zpm "install csvgen" \
+  zpm "load /opt/irisapp/ -v" 
 
 # bringing the standard shell back
 SHELL ["/bin/bash", "-c"]
