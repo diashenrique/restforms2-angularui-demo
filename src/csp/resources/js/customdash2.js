@@ -16,9 +16,11 @@ var qs = getQueryString();
 var formName = qs.formName || 'Form.Test.Person';
 
 $(document).ready(function () {
-
   $("#divFormName").text(` ${formName}`);
+  createDefaultCRUDForm();
+});
 
+var createDefaultCRUDForm = function() {
   var todoStore = new DevExpress.data.CustomStore({
     key: "ID",
     load: function () {
@@ -108,7 +110,6 @@ $(document).ready(function () {
 
         return objCol;
       });
-      // console.log(rf2FormInfo, cols);
 
       $("#divRAD").dxDataGrid({
         dataSource: todoStore,
@@ -130,4 +131,4 @@ $(document).ready(function () {
       });
     }
   });
-});
+}
