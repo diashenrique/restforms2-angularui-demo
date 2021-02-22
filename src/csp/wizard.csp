@@ -103,7 +103,7 @@
                   <span class="menu-text">RESTForms2</span>
                 </a>
               </li>
-              <li class="menu-item has-active">
+              <li class="menu-item">
                 <a href="rad.html" class="menu-link">
                   <span class="menu-icon far fa-edit"></span>
                   <span class="menu-text">CRUD Extreme</span>
@@ -115,7 +115,7 @@
                   <span class="menu-text">Create Class</span>
                 </a>
               </li>
-              <li class="menu-item">
+              <li class="menu-item has-active">
                 <a href="wizard.csp" class="menu-link">
                   <span class="menu-icon fas fa-cubes"></span>
                   <span class="menu-text">Import Wizard</span>
@@ -168,29 +168,142 @@
               <!-- .btn-account -->
               <div class="has-badge">
                 <span>
-                  <img src="resources/img/icons8-form-40.png" width="32" height="32">
+                  <img src="resources/img/wizard.png" width="32" height="32">
                 </span>
               </div>
               <div class="account-summary" style="margin-left:5px">
-                <h1 class="card-title"><div id="divFormName"></h1>
-                <h6 class="card-subtitle text-muted"> IRIS RAD Studio - Rapid Application Development  </h6>
+                <h1 class="card-title"> Import Wizard </h1>
+                <h6 class="card-subtitle text-muted"> CSV Import Assistant with optional cube creation and generating sample dashboard  </h6>
               </div>
               <!-- /.btn-account -->
             </header>
             <!-- /.page-navs -->
             <!-- .page-section -->
             <div class="page-section">
-              <!-- .card -->
-              <div id="base-style" class="card">
-                <!-- .card-body -->
-                <div class="card-body">
-                  <!-- .form -->
-                  <div id="divRAD"></div>
-                  <!-- /.form -->
+              <div class="section-block">
+                <div class="col-lg-12">
+                  <!-- .card -->
+                  <div class="card">
+                    <!-- .card-body -->
+                    <div class="card-body">
+                      <h4 class="card-title"> Import Definitions</h4>
+                      <form enctype="multipart/form-data" method="post" id="fileUploadForm" action="analytics.csp">
+                        <!-- .form-row -->
+                        <div class="form-row">
+                          <div class="input-group col-md-6 mb-2">
+                            <input type="file" class="form-control" name="FileStream" id="file" required="" accept=".csv">
+                            <label class="input-group-text" for="file">Upload</label>
+                          </div>
+                        </div>
+                        <div class="form-row">
+                          <div class="col-md-2 mb-2">
+                            <label for="separator">Separator</label>
+                            <input type="text" class="form-control" id="separator" name="separator" placeholder='default separator is ","'>
+                          </div>
+                        </div>
+                        <hr class="mt-3">
+                        <div class="form-row">
+                          <div class="col-md-12 mb-4">
+                            <label for="className">Class Name</label>
+                            <input type="text" class="form-control" id="className" name="className" required="">
+                          </div>
+                        </div>
+                        <hr class="mt-2">
+                        <div class="form-row">
+                          <!-- .form-group -->
+                          <div class="form-group">
+                            <!-- .custom-control -->
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" id="createCube" name="createCube" class="custom-control-input" data-parsley-group="createCube">
+                              <label class="custom-control-label" for="createCube">Should I create a cube for this class?</label>
+                            </div><!-- /.custom-control -->
+                          </div><!-- /.form-group -->
+                        </div>  
+
+                        <div class="form-row">
+                          <!-- grid column -->
+                          <div class="col-md-12 mb-4">
+                            <label for="cubeName">Cube Name</label>
+                            <input type="text" class="form-control" id="cubeName" name="cubeName">
+                          </div><!-- /grid column -->
+                        </div><!-- /.form-row -->
+
+                        <div class="form-row">
+                          <!-- .form-group -->
+                          <div class="form-group">
+                            <!-- .custom-control -->
+                            <div class="custom-control custom-checkbox">
+                              <input type="checkbox" id="generateDash" name="generateDash" class="custom-control-input" data-parsley-group="generateDash">
+                              <label class="custom-control-label" for="generateDash">Generate a sample dashboard?</label>
+                            </div><!-- /.custom-control -->
+                          </div><!-- /.form-group -->
+                        </div>
+
+                        <div class="d-flex">
+                          <button type="submit" id="btnUpload" class="submit btn btn-primary ml-auto" data-validate="agreement">Upload</button>
+                        </div>
+                      </form><!-- /form .needs-validation -->
+
+                      <!-- As form is submitted to this page look to see if we have the stream in the %request object -->
+                      <csp:if condition='($data(%request.MimeData("FileStream",1)))'>
+                        <hr><br>
+                        Submitted filename: <b>#(..EscapeHTML(%request.MimeData("FileStream",1).FileName))#</b><br>
+                        Size of file: <b>#(..EscapeHTML(%request.MimeData("FileStream",1).Size))#</b><br>
+                        Mime Section: <b>#(..EscapeHTML(%request.MimeData("FileStream",1).MimeSection))#</b><br>
+                        Type of stream: <b>#(..EscapeHTML($classname(%request.MimeData("FileStream",1))))#</b><br>
+                        Content Type: <b>#(..EscapeHTML(%request.MimeData("FileStream",1).ContentType))#</b><br>
+                        Class Name : <b>#(..EscapeHTML(%request.Data("className",1)))#</b><br>
+                        Cube Name : <b>#(..EscapeHTML(%request.Data("cubeName",1)))#</b><br>
+
+                        <script language="Cache" runat="server">
+                          new stream, tSeparator, tSourceClass, tCreateCube, tCubeClass, tCubeName, tGenerateDash
+                          set (stream, tSeparator, tSourceClass, tCreateCube, tCubeClass, tCubeName, tGenerateDash)=""
+
+                          set stream = %request.GetMimeData("FileStream")
+                          set tSeparator = $get(%request.Data("separator",1))
+                          if (tSeparator = "") {
+                            set tSeparator = ","
+                          }
+                          set tSourceClass = $get(%request.Data("className",1))
+                          set tCubeName = $get(%request.Data("cubeName",1))
+                          set tCreateCube = $get(%request.Data("createCube",1))
+                          set tGenerateDash = $get(%request.Data("generateDash",1))
+
+                          if ('$IsObject(stream)) {
+                            $$$ThrowOnError($$$ERROR(9200,"no file"))
+                          } else {
+                            $$$ThrowOnError(##class(community.csvgen).StreamToFile(stream,.filename))
+                            $$$ThrowOnError(##class(community.csvgen).Generate(filename,tSeparator,tSourceClass))
+                          }
+
+                          if (tCreateCube'="") {
+                            set tCubeClass=tSourceClass_"Cube"
+                            set st = ##class(%DeepSee.WizardUtils).%GenerateCubeDefinition(tSourceClass,tCubeName,tCubeClass)
+
+                            if $$$ISOK(st) {
+                              set st = $System.OBJ.Compile(tCubeClass,"fck /displayerror=0 /displaylog=0")
+                              
+                              if $$$ISOK(st) {
+                                set st = ##class(%DeepSee.Utils).%BuildCube(tCubeName,,0)
+
+                                if $$$ISOK(st) {
+                                  if (tGenerateDash'="") {
+                                    set st = ##class(AnalyzeThis.Generator).GenerateDash(tCubeName) 
+
+                                    &SQL(GRANT Select ON * TO UnknownUser)
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        </script>
+                        </ul>
+                      </csp:if>
+
+                    </div><!-- /.card-body -->
+                  </div><!-- /.card -->
                 </div>
-                <!-- /.card-body -->
               </div>
-              <!-- .card -->
             </div>
             <!-- /.page-section -->
           </div>
