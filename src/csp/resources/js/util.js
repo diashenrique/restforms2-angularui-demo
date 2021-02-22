@@ -62,7 +62,7 @@ function doLogin(user, password) {
             console.log(jqXHR, textStatus, errorThrown);
             console.log(jqXHR.status)
             if (jqXHR.status === 401) {
-                notify('Incorrect user or passoword. Please, try again.', NotificationEnum.ERROR)
+                notify('Incorrect user or password. Please, try again.', NotificationEnum.ERROR)
             } else {
                 notify('Sorry, can\'t login. See log for more detail.', NotificationEnum.ERROR);
             }
