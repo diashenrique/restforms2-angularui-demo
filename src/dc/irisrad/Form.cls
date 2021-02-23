@@ -73,7 +73,7 @@ Method CreateFormClass() As %Persistent
     Set classObj = ##class(%Dictionary.ClassDefinition).%New()
   }
   Set classObj.Name = className
-  Set classObj.Super = "%Persistent, Form.Adaptor"
+  Set classObj.Super = "%Persistent, dc.irisrad.FormAdaptor"
   Return classObj
 }
 
@@ -94,13 +94,47 @@ Method SetParameter(pParameterDef As %DynamicObject)
   Set paramObj.Default = pParameterDef.value
 }
 
+/// Get form metainformation by name
+ClassMethod GetFormInfo(form As %String = "") As %Status
+{
+	Set metadata = ##class(Form.Info).getFormMetadata(form)
+
+	Set toolbarUIDef = $PARAMETER(form, "ToolbarUIDef")
+  If (toolbarUIDef '= "") {
+    Set metadata.toolbarUIDef = ..GetXDataContent(toolbarUIDef)
+  }
+
+	Set customUIDef = $PARAMETER(form, "CustomUIDef")
+  If (customUIDef '= "") {
+    Set metadata.customUIDef = ..GetXDataContent(customUIDef)
+  }
+	
+  Write metadata.%ToJSON()
+	Return $$$OK
+}
+
+ClassMethod GetXDataContent(pXDataID As %String)
+{
+  Set compiledXdata = ##class(%Dictionary.CompiledXData).%OpenId(pXDataID)
+  Set tStream = compiledXdata.Data
+  Do ##class(%XML.TextReader).ParseStream(tStream,.textreader)
+  While textreader.Read() {
+    If (textreader.NodeType="chars") {
+      Set value = textreader.Value
+      Return value //{}.%FromJSON(value)
+    }
+  }
+}
+
 Method CreateDefaulQuery()
 {
+  // todo:
   /*
   Quit "SELECT name, spouse->name spouse, "_
     "(SELECT LIST(name) FROM Form_Test.Person WHERE ID %INLIST dc_irisrad.Form_FlattenList(User_forms_TestForm1.children)) children "_
     "FROM User_forms.TestForm User_forms_TestForm1"
   */
+  /*
 	set tMethod = ##class(%Dictionary.MethodDefinition).%New()
 	set tMethod.parent = pClass
 	set tMethod.Name = "Import"
@@ -113,6 +147,7 @@ Method CreateDefaulQuery()
 	do tMethod.Implementation.WriteLine($Char(9)_"set tStatementId = $SYSTEM.Util.CreateGUID(), tCounter = 0, pRecordCount = 0")
 	do tMethod.Implementation.WriteLine($Char(9)_"set tPreparedStatement = ##class(%SQL.DynamicStatement).Prepare(tStatementId,..#ROWTYPE,pDelimiter,pQuote,,,0,""CSV"")")
 	do tMethod.Implementation.WriteLine($Char(9)_"if $Isobject(tPreparedStatement) {")
+  */
 }
 
 /// TODO: move to a util class

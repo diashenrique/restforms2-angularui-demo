@@ -17,6 +17,9 @@ XData UrlMap [ XMLNamespace = "http://www.intersystems.com/urlmap" ]
 <Route Url="/form" Method="POST" Call="CreateForm"/>
 <Route Url="/form/:form" Method="DELETE" Call="DeleteForm"/>
 
+<!--  -->
+<Route Url="/form/info/:form" Method="GET" Call="dc.irisrad.Form:GetFormInfo"/>
+
 <!-- Ungly hack for resolve jQuery weird bug -->
 <Route Url="/form/object/:form/:id" Method="PUT" Call="updateFormDynamicObject"/>
 <Route Url="/form/object/:form/:id" Method="DELETE" Call="deleteFormObject"/>

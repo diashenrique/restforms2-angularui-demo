@@ -102,25 +102,39 @@ var createDefaultCRUDForm = function() {
 
         return objCol;
       });
+      
+      if (rf2FormInfo.toolbarUIDef) {
+        // todo: fix this security threat
+        // eval() function was used in order to allow embedded JS code
+        $("#toolbar").dxToolbar({
+          items: eval(`(${rf2FormInfo.toolbarUIDef})`)
+        });
+      }
 
-      $("#divRAD").dxDataGrid({
-        dataSource: todoStore,
-        showBorders: true,
-        columnsAutoWidth: true,
-        columnHidingEnabled: true,
-        searchPanel: {
-          visible: true,
-          width: 240,
-          placeholder: "Search..."
-        },
-        editing: {
-          mode: "form",
-          allowAdding: true,
-          allowUpdating: true,
-          allowDeleting: true
-        },
-        columns: cols
-      });
+      if (!rf2FormInfo.customUIDef) {
+        $("#divRAD").dxDataGrid({
+          dataSource: todoStore,
+          showBorders: true,
+          columnsAutoWidth: true,
+          columnHidingEnabled: true,
+          searchPanel: {
+            visible: true,
+            width: 240,
+            placeholder: "Search..."
+          },
+          editing: {
+            mode: "form",
+            allowAdding: true,
+            allowUpdating: true,
+            allowDeleting: true
+          },
+          columns: cols,
+        });
+      } else {
+        // todo: fix this security threat
+        // eval() function was used in order to allow embedded JS code
+        $("#divRAD").dxForm(eval(`(${rf2FormInfo.customUIDef})`));
+      }
     }
   });
 }
