@@ -95,6 +95,7 @@ Method SetParameter(pParameterDef As %DynamicObject)
 }
 
 /// Get form metainformation by name
+/// Overrided due UI customizations features
 ClassMethod GetFormInfo(form As %String = "") As %Status
 {
 	Set metadata = ##class(Form.Info).getFormMetadata(form)
@@ -111,6 +112,13 @@ ClassMethod GetFormInfo(form As %String = "") As %Status
 	
   Write metadata.%ToJSON()
 	Return $$$OK
+}
+
+ClassMethod GetFormQueryInfo(form As %String, query As %String) As %Status
+{
+  Set sc = $$$OK
+  Do $CLASSMETHOD(form, "GetQueryInfo", query)
+  Return sc
 }
 
 ClassMethod GetXDataContent(pXDataID As %String)

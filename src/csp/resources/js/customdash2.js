@@ -10,17 +10,37 @@ $(document).ajaxError(function (event, jqXHR, ajaxSettings, thrownError) {
 
 var qs = getQueryString();
 var formName = qs.formName || 'Form.Test.Person';
+var queryName = qs.queryName
 
 $(document).ready(function () {
   $("#divFormName").text(` ${formName}`);
   createDefaultCRUDForm();
 });
 
-var createDefaultCRUDForm = function() {
-  var todoStore = new DevExpress.data.CustomStore({
+var dataUrl;
+var metadataUrl;
+if (formName) {
+  dataUrl = `${urlREST}/objects/${formName}/allobj?size=1000000`;
+  metadataUrl = `${urlREST}/info/${formName}`;
+  if (queryName) {
+    dataUrl = `${urlREST}/objects/${formName}/custom/${queryName}?size=1000000`;
+    metadataUrl = `${urlREST}/info/${formName}/${queryName}`;
+  }
+}
+
+var createQueryCustomStore = function () {
+  return new DevExpress.data.CustomStore({
+    load: function () {
+      return sendRequest(dataUrl);
+    }
+  });
+}
+
+var createCRUDCustomStore = function () {
+  return new DevExpress.data.CustomStore({
     key: "ID",
     load: function () {
-      return sendRequest(`${urlREST}/objects/${formName}/allobj?size=1000000`);
+      return sendRequest(dataUrl);
     },
     insert: function (values) {
       return $.ajax({
@@ -52,9 +72,18 @@ var createDefaultCRUDForm = function() {
       };
     }
   });
+}
+
+var createDefaultCRUDForm = function () {
+  var customStore;
+  if (queryName) {
+    customStore = createQueryCustomStore();
+  } else {
+    customStore = createCRUDCustomStore();
+  }
 
   $.ajax({
-    url: `${urlREST}/info/${formName}`,
+    url: metadataUrl,
     method: "GET",
     processData: false,
     contentType: "application/json",
@@ -102,7 +131,7 @@ var createDefaultCRUDForm = function() {
 
         return objCol;
       });
-      
+
       if (rf2FormInfo.toolbarUIDef) {
         // todo: fix this security threat
         // eval() function was used in order to allow embedded JS code
@@ -111,9 +140,13 @@ var createDefaultCRUDForm = function() {
         });
       }
 
-      if (!rf2FormInfo.customUIDef) {
-        $("#divRAD").dxDataGrid({
-          dataSource: todoStore,
+      if (rf2FormInfo.customUIDef) {
+        // todo: fix this security threat
+        // eval() function was used in order to allow embedded JS code
+        $("#divRAD").dxForm(eval(`(${rf2FormInfo.customUIDef})`));
+      } else {
+        var dataGridConfig = {
+          dataSource: customStore,
           showBorders: true,
           columnsAutoWidth: true,
           columnHidingEnabled: true,
@@ -122,18 +155,19 @@ var createDefaultCRUDForm = function() {
             width: 240,
             placeholder: "Search..."
           },
-          editing: {
+          columns: cols,
+        };
+
+        if (!queryName) {
+          dataGridConfig.editing = {
             mode: "form",
             allowAdding: true,
             allowUpdating: true,
             allowDeleting: true
-          },
-          columns: cols,
-        });
-      } else {
-        // todo: fix this security threat
-        // eval() function was used in order to allow embedded JS code
-        $("#divRAD").dxForm(eval(`(${rf2FormInfo.customUIDef})`));
+          };
+        }
+
+        $("#divRAD").dxDataGrid(dataGridConfig);
       }
     }
   });
